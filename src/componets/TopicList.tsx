@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
 import { HiPencilAlt } from 'react-icons/hi'
 import RemoveBtn from './RemoveBtn'
 
@@ -13,47 +12,20 @@ interface Topic {
   updatedAt: string
 }
 
-export default function TopicList() {
-  const [topics, setTopics] = useState<Topic[]>([])
-  const [loading, setloading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function fetchTopics() {
-      try {
-        const res = await fetch('/api/topics')
-        if (!res.ok) {
-          throw new Error('Failed to fetch topics')
-        }
-        const data = await res.json()
-        setTopics(data.topics)
-      } catch (error) {
-        console.error('Error loading topics:', error)
-        setError('Failed to load topics')
-      } finally {
-        setloading(false)
-      }
-    }
-    fetchTopics()
-  }, [])
-
-  if (loading) return <p>Loading topics...</p>
-  if (error) return <p>Error:{error}</p>
-  if (topics.length === 0) return <p>No topics found.</p>
-
+export default function TopicList({ topics }: { topics: Topic[] }) {
   return (
     <div>
       {topics.map((topic: Topic) => (
         <div
           key={topic._id}
-          className="p-4 border border-slate-300 my-3 flex justify-between items-start gap-5 bg-yellow-100"
+          className="p-4 border border-slate-300 my-3 flex justify-between items-start gap-5 bg-blue-50"
         >
           <div>
             <h2 className="text-2xl font-bold">{topic.title}</h2>
             <div>{topic.description}</div>
             <div className="flex gap-4">
-              <p>Created: {topic.createdAt}</p>
-              <p>Updated: {topic.updatedAt} </p>
+              <p>Created: {new Date(topic.createdAt).toLocaleString()}</p>
+              <p>Updated: {new Date(topic.updatedAt).toLocaleString()}</p>
             </div>
           </div>
 
