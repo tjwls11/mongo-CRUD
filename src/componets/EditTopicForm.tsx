@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { updateTopic } from '@/action/topicActions'
 
 interface EditTopicFormProps {
   id: string
@@ -21,16 +22,7 @@ export default function EditTopicForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const res = await fetch(`/api/topics/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({ newTitle, newDescription }),
-      })
-      if (!res.ok) {
-        throw new Error('Failed to update topic')
-      }
+      await updateTopic(id, newTitle, newDescription)
       router.push('/')
       router.refresh()
     } catch (error) {
