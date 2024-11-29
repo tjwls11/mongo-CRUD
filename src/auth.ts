@@ -1,17 +1,17 @@
 import NextAuth from 'next-auth'
-import GitHub from 'next-auth/providers/github'
-import Google from 'next-auth/providers/google'
+import github from 'next-auth/providers/github'
+import google from 'next-auth/providers/google'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google, GitHub],
+  providers: [google, github],
   pages: {
     signIn: '/login',
   },
   callbacks: {
     async signIn({ user, account }) {
+      const apiUrl = process.env.API_URL
       if (account?.provider === 'google' || account?.provider === 'github') {
         try {
-          const apiUrl = process.env.API_URL || ''
           const res = await fetch(`${apiUrl}/api/user-auth`, {
             method: 'POST',
             headers: {

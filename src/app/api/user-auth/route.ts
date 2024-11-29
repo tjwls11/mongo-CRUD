@@ -1,6 +1,6 @@
+import { NextRequest, NextResponse } from 'next/server'
 import connectMongoDB from '@/libs/mongodb'
 import User from '@/models/user'
-import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const { user } = await req.json()
@@ -9,10 +9,11 @@ export async function POST(req: NextRequest) {
   try {
     await connectMongoDB()
     const userExists = await User.findOne({ email })
-
     if (!userExists) {
       await User.create({ name, email })
     }
+
+    // Log the login event
     const apiUrl = process.env.API_URL
     await fetch(`${apiUrl}/api/log`, {
       method: 'POST',
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({ email }),
     })
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error(error)
     return NextResponse.json(
